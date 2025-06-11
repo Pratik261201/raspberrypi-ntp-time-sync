@@ -382,6 +382,11 @@ Through the next pages of your log, PPS remains the preferred source (L = N, Co 
 * **Jitter:** The small `Offset sd` (\~1e-09) shows extremely low variation.
 * **Network servers remain idle** (?) or show `-` because PPS is far more precise.
 
+Refrences :
+https://austinsnerdythings.com/2021/04/19/microsecond-accurate-ntp-with-a-raspberry-pi-and-pps-gps/
+https://www.satsignal.eu/ntp/Raspberry-Pi-NTP.html
+https://www.chrony.eu/setup/linux#servers
+
 🎉 You’ve successfully created a nanosecond-accurate, Stratum-1 NTP server on Raspberry Pi! 🎉
 
 ---
