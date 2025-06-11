@@ -75,7 +75,7 @@ I used the Adafruit Ultimate GPS breakout. It has 9 pins but we are only interes
 ## 2.5 – Free up the UART Serial Port for the GPS Device
 
 Run `raspi-config` → **3 – Interface Options** → **I6 – Serial Port** → **Would you like a login shell to be available over serial?** → No → **Would you like the serial port hardware to be enabled?** → Yes.
-
+![][Images/uart]
 Finish and reboot.
 
 ## 3 – Check That PPS Is Working
@@ -146,7 +146,7 @@ sudo reboot
 
 To ensure your GPS has a valid position, you can run `gpsmon` or `cgps` to check satellites and such. This check also ensures GPSd is functioning as expected. If your GPS doesn’t have a position solution, you won’t get a good time signal. If GPSd isn’t working, you won’t get any updates on the screen. The top portion will show the analyzed GPS data and the bottom portion will scroll by with the raw GPS sentences from the GPS module.
 
-![GPS Fix Result][Images/step4-result]
+![GPS Fix Result][Images/result1]
 
 ## 5 – Edit Chrony Config Files
 
@@ -185,7 +185,7 @@ sudo systemctl restart chrony
 ## 6 – Results and Interpretation
 
 Here’s how to read and interpret your `tracking.log` output, with the key fields and what they tell you about your chrony-disciplined clock:
-
+![Results][Images/result5]
 ```
 ===================================================================================================================================
    Date (UTC) Time     IP Address   St   Freq ppm   Skew ppm     Offset L Co  Offset sd Rem. corr. Root delay Root disp. Max. error
