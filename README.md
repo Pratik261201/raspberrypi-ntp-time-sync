@@ -182,6 +182,121 @@ Restart Chrony and wait a few minutes:
 sudo systemctl restart chrony
 ```
 
+
+# Verifying NTP Server Using GPS PPS
+
+This document covers the verification of your Raspberry Pi Stratum‑1 NTP server using GPS PPS, including commands and log interpretation.
+
+## 5 – Verify the NTP Server Is Using the GPS PPS
+
+5.1. **Restart Chrony**
+
+   ```bash
+   sudo systemctl restart chrony
+   ```
+
+5.2. **Check sources immediately**
+
+   Run:
+
+   ```bash
+   chronyc sources
+   ```
+
+   Expected output:
+
+   ```bash
+   210 Number of sources = 9
+   MS Name/IP address         Stratum Poll Reach LastRx Last sample
+   ===============================================================================
+   #? NMEA                          0   4     0     -     +0ns[   +0ns] +/-    0ns
+   #? PPS                           0   4     0     -     +0ns[   +0ns] +/-    0ns
+   ^? pfsense.home.fluffnet.net     0   3     3     -     +0ns[   +0ns] +/-    0ns
+   ^? time-a-b.nist.gov             1   6     3     1  -2615us[-2615us] +/- 8218us
+   ^? time-d-b.nist.gov             1   6     1     3  -2495us[-2495us] +/- 7943us
+   ^? india.colorado.edu            0   6     0     -     +0ns[   +0ns] +/-    0ns
+   ^? 13.86.101.172                 3   6     1     4  -4866us[-4866us] +/-   43ms
+   ^? usdal4-ntp-002.aaplimg.c>     1   6     1     4  -2143us[-2143us] +/-   13ms
+   ^? time.cloudflare.com           3   6     1     3  -3747us[-3747us] +/- 9088us
+   ```
+
+   * `#` means a locally connected source of time.
+   * `?` indicates Chrony is still determining the status of each source.
+
+5.3. **Check sources after a few minutes**
+
+   Run:
+
+   ```bash
+   chronyc -n sources
+   ```
+
+   Expected output:
+
+   ```bash
+   210 Number of sources = 9
+   MS Name/IP address         Stratum Poll Reach LastRx Last sample
+   ===============================================================================
+   #x NMEA                          0   4   377    23    -37ms[  -37ms] +/- 1638us
+   #* PPS                           0   4   377    25   -175ns[ -289ns] +/-  126ns
+   ^? 10.98.1.1                     0   5   377     -     +0ns[   +0ns] +/-    0ns
+   ^- 132.163.96.1                  1   6   177    22  -3046us[-3046us] +/- 8233us
+   ^- 2610:20:6f96:96::4            1   6    17    28  -2524us[-2524us] +/- 7677us
+   ^? 128.138.140.44                1   6     3    30  -3107us[-3107us] +/- 8460us
+   ^- 13.86.101.172                 3   6    17    28  -8233us[-8233us] +/-   47ms
+   ^- 17.253.2.253                  1   6    17    29  -3048us[-3048us] +/-   14ms
+   ^- 2606:4700:f1::123             3   6    17    29  -3325us[-3325us] +/- 8488us
+   ```
+
+   * In the **S** column:
+
+     * `*` means the active source.
+
+     * `+` means a good candidate if the current one fails.
+
+     * `x` means a false ticker (not used).
+
+   > **Observation:** The `PPS` line shows `*`, indicating PPS is the active, preferred source with sub-µs accuracy.
+
+5.4. **Ping a remote source**
+
+   To gauge network delay, run:
+
+   ```bash
+   ping -c 5 17.253.2.253
+   ```
+
+   Sample output:
+
+   ```bash
+   PING 17.253.2.253 (17.253.2.253) 56(84) bytes of data.
+   64 bytes from 17.253.2.253: icmp_seq=1 ttl=54 time=25.2 ms
+   64 bytes from 17.253.2.253: icmp_seq=2 ttl=54 time=27.7 ms
+   64 bytes from 17.253.2.253: icmp_seq=3 ttl=54 time=23.8 ms
+   64 bytes from 17.253.2.253: icmp_seq=4 ttl=54 time=24.4 ms
+   64 bytes from 17.253.2.253: icmp_seq=5 ttl=54 time=23.4 ms
+   --- 17.253.2.253 ping statistics ---
+   5 packets transmitted, 5 received, 0% packet loss, time 4007ms
+   rtt min/avg/max/mdev = 23.403/24.954/27.780/1.547 ms
+   ```
+
+   Note how the average RTT (\~25 ms) compares to the PPS offset (< 1 µs).
+
+5.5. **View the full `tracking.log`**
+
+   To examine the complete clock discipline log, run:
+
+   ```bash
+   sudo cat /var/log/chrony/tracking.log
+   ```
+
+   This will dump all timestamped adjustments and help you analyze long-term stability.
+
+---
+
+**Congratulations!** You’ve confirmed that your Raspberry Pi NTP server is locked to GPS PPS and achieving micro‑ to nanosecond‑level accuracy. 🎉
+
+
 ## 6 – Results and Interpretation
 
 Here’s how to read and interpret your `tracking.log` output, with the key fields and what they tell you about your chrony-disciplined clock:
