@@ -273,8 +273,7 @@ Through the next pages of your log, PPS remains the preferred source (L = N, Co 
 
 <!-- Image references -->
 
-[Images/step2-connection-visual]: ./Images/step2-connection-visual.png
+[Images/step2-connection-visual]: ./Images/step2-connection-visual.jpg
 [Images/uart]: ./Images/uart.png
-[Images/step4-result]: ./Images/step4-result.png
 [Images/result1]: ./Images/result1.png
 [Images/result5]: ./Images/result5.png
