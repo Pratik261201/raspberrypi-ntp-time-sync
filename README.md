@@ -148,7 +148,7 @@ To ensure your GPS has a valid position, you can run `gpsmon` or `cgps` to check
 
 ![GPS Fix Result][Images/result1]
 
-## 5 – Edit Chrony Config Files
+## 4.6– Edit Chrony Config Files
 
 **2025 update:** see the newer post on Chrony config for how to get single source (i.e. just your single GPS to use both NMEA and PPS) timing to work successfully.
 
